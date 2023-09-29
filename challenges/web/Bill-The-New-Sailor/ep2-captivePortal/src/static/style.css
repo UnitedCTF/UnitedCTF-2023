@@ -1,0 +1,84 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}
+html {
+    position: relative;
+    min-height: 100%;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.ascii-art {
+    font-family: monospace;
+    white-space: pre;
+    font-size: 16px;
+    background-color: black;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    position: relative;
+}
+.speech-bubble {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.3);
+}
+.crew-member {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.crew-member img {
+    width: 100px;
+    height: auto;
+    margin-right: 1rem;
+}
+.error-box {
+    background-color: #ffdddd;
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.user-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.user-section form {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.user-section button {
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

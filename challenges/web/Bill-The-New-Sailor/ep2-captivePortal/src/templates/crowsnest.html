@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block title %}Crow's nest Portal - Cyber Corsairs{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if not ip.startswith("10.10.10.") %}
+    <div class="error-box">
+        Thats not an IP address inside of our standard 10.10.10.0/24 subnet.. Who are you..?
+    </div>
+    {% elif UA_check is not true %}
+    <div class="error-box">
+        I only let people with the weirdest device of all pass... people that navigate with the IPad!
+    </div>
+    {% else %}
+    <div class="custom-block">
+            <h2>Hello fellow crow's nest enjoyer, what about this view ?</h2>
+            <p>flag-BringMeThatHorizonMate</p>
+            <img src="/static/horizon.jpg" alt="beautiful sea of thieves view"> 
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

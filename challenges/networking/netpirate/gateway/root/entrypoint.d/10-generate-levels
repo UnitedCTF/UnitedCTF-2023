@@ -1,0 +1,26 @@
+#!/bin/ash
+# This script the users/groups for the levels
+set -e
+
+if ! getent group levels &>/dev/null; then
+  addgroup levels
+fi
+
+mkdir -p /tmp/sessions /tmp/ctfd /levels
+for LEVEL_BASE in $(find /level_bases -mindepth 1 -maxdepth 1 -type d | sort -V); do
+  LEVEL_NAME=$(basename "$LEVEL_BASE")
+  if getent passwd "$LEVEL_NAME" &>/dev/null; then
+    continue
+  fi
+
+  adduser -D "$LEVEL_NAME" \
+    -s /usr/local/bin/level-entrypoint \
+    -h "/levels/$LEVEL_NAME" \
+    -k "$LEVEL_BASE"
+  chmod 700 "/levels/$LEVEL_NAME"
+
+  addgroup "$LEVEL_NAME" levels
+  echo "$LEVEL_NAME:$LEVEL_NAME" | chpasswd &>/dev/null
+
+  echo "info: added '$LEVEL_NAME'"
+done

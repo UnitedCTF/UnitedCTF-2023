@@ -1,0 +1,135 @@
+#!/bin/ash
+# This script serves as an entrypoint for every level
+
+if [ -z "$SUDO_UID" ]; then
+  sudo -Eku root "$0" $@
+  exit "$?"
+fi
+
+if [ ! -z "$1" ]; then
+  if [ "$1" != "-c" ]; then
+    echo "Please use a standard SSH client"
+    exit 0
+  fi
+  shift
+fi
+
+# Source the main env file
+source /levels/.env
+
+# Change directory to the level's folder
+cd "$(getent passwd "$SUDO_USER" | cut -d: -f6)"
+
+# Create or resume the session
+if [ ! -z "$1" ]; then
+  ID="$1"
+  shift
+
+  # Validate the session ID
+  if ! [[ $ID =~ ^[a-f0-9]{16}$ ]]; then
+    echo "Invalid session ID"
+    exit 0
+  elif [ ! -f "/tmp/sessions/$SUDO_USER-$ID" ]; then
+    echo "Invalid or expired session ID"
+    exit 0
+  fi
+
+  SESSION_ID="$SUDO_USER-$ID"
+
+  # Log the creation of the new session in the gateway logs
+  echo "info: executing in session '$SESSION_ID' command '${@:-/bin/bash}' from '${SSH_CLIENT:-unknown}'" > /proc/1/fd/1
+else
+  # Do not create another session if there are too many on the system
+  if [ "$(find /tmp/sessions -maxdepth 1 -type f | wc -l)" -ge "$LEVEL_LIMIT_COUNT" ]; then
+    echo "warning: maximum session reached from '${SSH_CLIENT:-unknown}'" > /proc/1/fd/1
+    echo "There are too many sessions running at the same time.. Please try again later :("
+    exit 0
+  fi
+
+  # Generate a random hex string of length 16
+  ID=$(tr -dc a-f0-9 </dev/urandom | head -c 16)
+
+  # If the variable is set, validate that a user is only connected to one session at a time via CTFd
+  if [ -n "$LEVEL_CTFD_INTEGRATION" ]; then
+    echo -n "Please input your CTFd token: "
+    read CTFD_TOKEN
+
+    # Fetch data from the CTFd API using the provided token
+    IFS=":" read CTFD_SUCCESS CTFD_USER_ID CTFD_USER_NAME < <(
+      curl -s -XGET "${LEVEL_CTFD_INTEGRATION}/api/v1/users/me" \
+        -H "Authorization: Token $CTFD_TOKEN" \
+        -H "Content-Type: application/json" | \
+          jq -r '(.success | tostring) + ":" + (.data.id | tostring) + ":" + (.data.name)' 2>/dev/null)
+
+    # Check if the response from the CTFd API is valid
+    if [ "$CTFD_SUCCESS" != "true" ]; then
+      echo "Unable to confirm your identity, is your token valid?"
+      exit 1
+    fi
+
+    # The ID should be numeric, if not, something went wrong
+    if ! [[ $CTFD_USER_ID =~ ^[0-9]+$ ]]; then
+      echo "Unable to fetch data from CTFd, please contact an administrator.."
+      exit 1
+    fi
+
+    echo "info: ctfd user authenticated '$CTFD_USER_NAME ($CTFD_USER_ID)' from '${SSH_CLIENT:-unknown}'" > /proc/1/fd/1
+
+    # Verify if the user is already connected
+    if [ -f "/tmp/ctfd/$CTFD_USER_ID" ]; then
+      CURRENT_SESSION_ID=$(cat /tmp/ctfd/$CTFD_USER_ID)
+      if [ -f "/tmp/sessions/$CURRENT_SESSION_ID" ]; then
+        IFS="-" read LEVEL_NAME SESSION_ID < <(echo $CURRENT_SESSION_ID)
+        echo -e "You are already connected to a session, you can .."
+        echo -e "  Connect back to it with 'ssh -p2222 \e[1;32m-t\e[0m $LEVEL_NAME@X.X.X.X $SESSION_ID'"
+        echo -e "  Close it with 'ssh -p2222 $LEVEL_NAME@X.X.X.X $SESSION_ID <<<\"exit 99\"'"
+        exit 1
+      fi
+    fi
+  fi
+
+  SESSION_ID="$SUDO_USER-$ID"
+  echo "${SSH_CLIENT:-unknown}" > "/tmp/sessions/$SESSION_ID"
+  if [ -n "$CTFD_USER_ID" ]; then
+    echo -n "$SESSION_ID" > "/tmp/ctfd/$CTFD_USER_ID"
+  fi
+
+  echo
+  echo -e "Your session ID is '$ID', use it to .."
+  echo -e "  Connect back with 'ssh -p2222 \e[1;32m-t\e[0m $SUDO_USER@X.X.X.X $ID'"
+  echo -e "  Open pipes with 'ssh -p2222 $SUDO_USER@X.X.X.X $ID cat /etc/passwd'"
+  echo -e "  Close it with 'ssh -p2222 $SUDO_USER@X.X.X.X $ID <<<\"exit 99\"'"
+  echo
+  echo -e "Sessions left alone are removed and they live up to a maximum of $REAP_CUTOFF minutes, do \e[4;31mNOT\e[0m leave anything here!"
+  echo "When you are done with your session, please type 'exit 99' and press enter."
+
+  # Log the creation of the new session in the gateway logs
+  echo "info: created session '$SESSION_ID' from '${SSH_CLIENT:-unknown}'" > /proc/1/fd/1
+
+  # Start the session, a custom bridge name is used for the "level-network-isolation.sh" script
+  BR_NAME="np-$(echo -n $ID | head -c 12)" \
+    docker compose \
+      -p "$SESSION_ID" \
+      --env-file /levels/.env \
+        up -d --wait 2>&1 | while read; do echo -n .; done;
+  echo
+  echo
+fi
+
+# Enter the session's entrypoint
+docker compose \
+  -p "$SESSION_ID" \
+    exec \
+      -e "SESSION_ID=$SESSION_ID" \
+        entrypoint "${@:-/bin/bash}"
+
+# Remove the session if it stopped with code 99
+if [ "$?" -eq 99 ]; then
+  rm "/tmp/sessions/$SESSION_ID"
+  echo "info: removed session '$SESSION_ID' from '${SSH_CLIENT:-unknown}'" > /proc/1/fd/1
+  docker compose \
+    -p "$SESSION_ID" \
+      down -v -t0 \
+        2>&1 | while read; do echo -n .; done;
+  echo
+fi

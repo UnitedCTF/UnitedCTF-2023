@@ -1,0 +1,24 @@
+Un drapeau pour les petits rapides : FLAG-EscapeSequences
+A flag for the quick ones: FLAG-EscapeSequences
+
+[2J[H
+     [1;37mBienvenue à bord [36mmoussaillon [0;1;37m![0m
+
+     [37mVous avez désormais accès à l'ordinateur central de votre bateau pirate.
+ Explorez les différentes fonctionnalités de l'ordinateur central et rapportez
+ vos découvertes dans le tableau des scores pour être récompensés.[0m
+
+     [37mFélicitations pour avoir réussi à vous connecter, n'oubliez pas d'hisser
+ votre drapeau : [4;33mFLAG-SecureSHip[0m
+
+ -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+     [1;37mWelcome aboard [36mmoussaillon [0;1;37m![0m
+
+     [37mYou now have access to your pirate ship's central computer. Explore
+ the different features and report your discoveries in the scoreboard to be
+ rewarded.[0m
+
+     [37mCongratulations for logging in, remember to hoist your flag:
+         [4;33mFLAG-SecureSHip[0m
+

@@ -1,0 +1,6 @@
+services:
+  central-computer:
+    build: ./central-computer
+    hostname: central-computer.pirate-ship
+    ports:
+      - "2222:22"

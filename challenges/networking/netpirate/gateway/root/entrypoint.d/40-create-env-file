@@ -1,0 +1,18 @@
+#!/bin/ash
+# This script creates a global environment file for all levels
+set -e
+
+{
+  echo "FLAG_INTERVAL=${FLAG_INTERVAL:-60}"
+  echo "LEVEL_CTFD_INTEGRATION=${LEVEL_CTFD_INTEGRATION}"
+  echo "LEVEL_LIMIT_COUNT=${LEVEL_LIMIT_COUNT:-20}"
+  echo
+  echo "REAP_INTERVAL=${REAP_INTERVAL:-15}"
+  echo "REAP_CUTOFF=${REAP_CUTOFF:-60}"
+  echo
+  echo "ENTRYPOINT_LIMIT_CPU=${ENTRYPOINT_LIMIT_CPU:-0.3}"
+  echo "ENTRYPOINT_LIMIT_MEM=${ENTRYPOINT_LIMIT_MEM:-128m}"
+  echo
+  echo "SERVER_LIMIT_CPU=${SERVER_LIMIT_CPU:-0.01}"
+  echo "SERVER_LIMIT_MEM=${SERVER_LIMIT_MEM:-8m}"
+} > /levels/.env

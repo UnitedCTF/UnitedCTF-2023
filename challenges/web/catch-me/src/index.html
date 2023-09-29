@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #C2B280;
+    }
+  
+    .square {
+      width: 50px;
+      height: 50px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-container {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    h1 {
+      position: absolute;
+      margin-top: 40px;
+      transform: translate(-50%, -50%);
+      left: 50%;
+    }
+
+    .cursor {
+      position: absolute;
+      width: 35px;
+      height: 35px;
+      pointer-events: none;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <h1>CATCH ME !</h1>
+
+  <div class="cursor-container">
+    <img src="assets/net.png" alt="rod" id="rod" class="cursor" />
+  </div>
+    
+
+  <img src="assets/crab.webp" alt="crab" id="crab" class="square" />
+  
+  <script src="script.js"></script>
+</body>
+</html>

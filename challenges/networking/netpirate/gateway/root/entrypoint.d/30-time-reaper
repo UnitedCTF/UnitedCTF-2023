@@ -1,0 +1,17 @@
+#!/bin/ash
+# This script stops the session's entrypoint older than ($REAP_CUTOFF or 60) minutes
+
+{
+  while :; do
+    sleep $((${REAP_INTERVAL:-15}*60))
+    for SESSION_ID in $(find /tmp/sessions -mindepth 1 -maxdepth 1 -mmin "+${REAP_CUTOFF:-60}" -type f -exec basename "{}" \; | sort -V); do
+      echo "info: session '$SESSION_ID' is too old, removing it.."
+      LEVEL_NAME=$(echo -n "$SESSION_ID" | cut -d "-" -f1)
+      (
+        cd "/levels/$LEVEL_NAME"
+        docker compose -p "$SESSION_ID" down -v -t0 &>/dev/null
+      )
+      rm "/tmp/sessions/$SESSION_ID"
+    done
+  done
+} &

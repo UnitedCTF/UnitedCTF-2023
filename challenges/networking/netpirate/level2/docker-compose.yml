@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  entrypoint:
+    build:
+      context: ./entrypoint
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    sysctls:
+      net.ipv4.ip_forward: 0
+    cpus: ${ENTRYPOINT_LIMIT_CPU:-0.3}
+    mem_limit: ${ENTRYPOINT_LIMIT_MEM:-128m}
+
+    networks:
+      network:
+
+  server1:
+    build:
+      context: ./server1
+
+    restart: unless-stopped
+    cpus: ${SERVER_LIMIT_CPU:-0.01}
+    mem_limit: ${SERVER_LIMIT_MEM:-8m}
+
+    environment:
+      FLAG: flag-359ec5f6fb5f875bd476121453c7071d0d4de24eb96cb51e5370a44fae4cd797
+      FLAG_INTERVAL: ${FLAG_INTERVAL:-60}
+
+    networks:
+      network:
+
+networks:
+  network:
+    driver_opts:
+      com.docker.network.bridge.name: ${BR_NAME:-np-level2}

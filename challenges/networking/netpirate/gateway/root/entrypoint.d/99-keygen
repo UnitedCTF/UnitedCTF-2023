@@ -1,0 +1,5 @@
+#!/bin/ash
+# This script generates the key for the SSH server
+set -e
+
+ssh-keygen -A >/dev/null

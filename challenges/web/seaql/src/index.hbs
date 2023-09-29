@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+    <title>Pirate's Ledger</title>
+</head>
+
+<body class="bg-orange-900">
+
+    <header class="bg-orange-700 p-5 text-center">
+        <h1 class="text-4xl font-bold">Pirate's Ledger</h1>
+    </header>
+
+
+    <section class="container max-w-md mx-auto p-5">
+        <form action="/" method="GET" class="mb-5">
+            <input type="text" name="title" placeholder="Search for a book..." class="px-3 py-2 rounded w-full" value="{{default_search}}">
+            <button type="submit" class="block bg-orange-500 transition-colors hover:bg-orange-600 px-3 py-2 rounded mt-3 w-full">Search</button>
+        </form>
+
+        <ul class='text-white'>
+            {{#each books}}
+            <li class="mb-3">
+                <a href="/details/{{this}}">{{this}}</a>
+            </li>
+            {{/each}}
+        </ul>
+    </section>
+
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+	<title>The Evalution Enigma</title>
+<style type="text/css">
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Pirata One', cursive;
+    background-color: #2a2d36;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-image: url('static/images/pirate_bg.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.main {
+    text-align: center;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 70%;
+    max-width: 500px;
+}
+
+.main h1 {
+    font-size: 36px;
+    color: #eac85e;
+    margin-bottom: 20px;
+}
+
+.main form {
+    margin-top: 20px;
+}
+
+.main input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.main button {
+    padding: 10px 20px;
+    background-color: #c72c25;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.main button:hover {
+    background-color: #971d18;
+}
+
+.main p {
+    font-size: 18px;
+    color: #555555;
+    margin-top: 20px;
+}
+
+
+</style>
+</head>
+<body>
+    <div class="main">
+        <h1>The Evalution Enigma</h1>
+        <p>Ahoy, matey! Ye stand at the crossroads of code and mystery. Set yer course and chart the waters of this enigmatic realm.</p>
+        <form>
+            <input type="text" name="q" placeholder="Unravel the riddles...">
+            <button>Decode</button>
+        </form>
+        <br>
+        {% if result is defined %}
+            <p>{{ result }}</p>
+        {% endif %}
+    </div>
+    <!-- Credit for the background image
+        Image by <a href="https://www.freepik.com/free-vector/pirate-ship-wooden-deck-onboard-view-with-cannon_7741553.htm">upklyak</a> on Freepik
+    -->
+</body>
+
+</html>

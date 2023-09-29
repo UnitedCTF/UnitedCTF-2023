@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quote generator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <style>
+      html {
+        background-image: url("images/pirate_flag.gif");
+        background-repeat: repeat;
+        width: 100vw;
+        height: 100vh;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #quote {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px 10px 10px 10px;
+        margin: 25px 25px 25px 25px;
+        border-radius: 15px;
+
+        font-family: "Roboto";
+        font-size: 64px;
+        font-weight: bold;
+
+        text-align: center;
+        overflow-wrap: break-word;
+      }
+    </style>
+    <script>
+      async function getQuote(index) {
+        return (
+          await (
+            await fetch(
+              "/graphql?" +
+                new URLSearchParams({
+                  query: `{ getQuote(index: ${index}) }`,
+                })
+            )
+          ).json()
+        ).data.getQuote;
+      }
+
+      async function getRandomQuote() {
+        return (
+          await (
+            await fetch(
+              "/graphql?" +
+                new URLSearchParams({
+                  query: "{ getRandomQuote }",
+                })
+            )
+          ).json()
+        ).data.getRandomQuote;
+      }
+
+      function onLoad() {
+        getRandomQuote().then((quote) => {
+          document.getElementById("quote").innerText = quote;
+        });
+      }
+    </script>
+  </head>
+  <body onload="onLoad()">
+    <div id="quote"></div>
+  </body>
+</html>

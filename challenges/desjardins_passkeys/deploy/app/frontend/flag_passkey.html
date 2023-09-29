@@ -1,0 +1,28 @@
+<html>
+	<head></head>
+	<body>
+		<script src="https://unpkg.com/petite-vue"></script>
+		<script src="https://psg.so/web.js"></script>
+
+		<button id="signout">Sign out</button>
+		Good job! You signed up and logged in using a Passkey, a phishing-resistant, passwordless, portable and easy to use method! FIDO2 and Passkeys have a bright future :) 
+		FLAG-PasskeysAreTheFutureOfAuthentication8392935
+
+		<script type="module">
+			import {Passage} from "https://cdn.passage.id/passage-js.js"
+
+			const passage = new Passage('<%= process.env.PASSAGE_APP_ID %>');
+			const user = passage.getCurrentUser();
+			const userInfo = await user.userInfo();
+			console.log('user', userInfo)
+
+			export function signout() {
+				const session = passage.getCurrentSession(); 
+				session.signOut();
+				console.log('signed out')
+				window.location = '/'
+			}
+			document.querySelector("#signout").addEventListener('click', signout)
+		</script>
+	</body>
+</html>

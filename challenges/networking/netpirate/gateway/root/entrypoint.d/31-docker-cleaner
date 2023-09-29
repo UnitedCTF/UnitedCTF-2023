@@ -1,0 +1,24 @@
+#!/bin/ash
+# This script removes docker compose projects that are left alone
+
+{
+  while IFS=" " read TIMESTAMP OBJECT METHOD HASH LABELS; do
+    if [ "$OBJECT-$METHOD" != "container-die" ] ; then
+      continue
+    fi
+
+    while IFS="=" read KEY VALUE; do
+      export "LABEL_$(echo -n "$KEY" | tr '.-' '_')"="${VALUE}"
+    done < <(echo -n "$LABELS" | \
+              sed -rn 's/\((.*)\)/\1/p' | \
+              sed 's/, /\n/g')
+
+    if [ "${LABEL_com_docker_compose_service}-${LABEL_exitCode}" == "entrypoint-99" ]; then
+      echo "info: session '$LABEL_com_docker_compose_project' was left alone, removing it.."
+
+      cd "$LABEL_com_docker_compose_project_working_dir"
+      docker compose -p "$LABEL_com_docker_compose_project" down -v -t0 &>/dev/null
+      rm "/tmp/sessions/$LABEL_com_docker_compose_project"
+    fi
+  done < <(docker events)
+} &

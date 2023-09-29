@@ -1,0 +1,33 @@
+#!/bin/ash
+# This script validates if the container can use the 'docker' command
+set -e
+
+if [ -z "$DOCKER_SOCKET" ]; then
+  export DOCKER_SOCKET=/var/run/docker.sock
+fi
+
+if [ ! -e "$DOCKER_SOCKET" ]; then
+  echo "fatal: missing docker socket"
+  tail -f /dev/null &
+  wait "$!"
+fi
+
+if [ ! -w "$DOCKER_SOCKET" ] || [ ! -r "$DOCKER_SOCKET" ]; then
+  echo "fatal: invalid rights on docker socket"
+  tail -f /dev/null &
+  wait "$!"
+fi
+
+if ! docker info >/dev/null; then
+  echo "fatal: unable to use docker socket"
+  tail -f /dev/null &
+  wait "$!"
+fi
+
+if ! docker info | grep -i "default address pools" >/dev/null; then
+  echo "warning: 'default address pools' is not set, you might run out of networks faster than you think.. please add one with a size of 28"
+  echo 'warning: example /etc/docker/daemon.json: {"default-address-pools":[{"base":"10.0.0.0/8","size":28}]}'
+
+  sleep 5 &
+  wait "$!"
+fi

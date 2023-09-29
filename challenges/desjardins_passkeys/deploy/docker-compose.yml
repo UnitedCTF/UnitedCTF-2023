@@ -1,0 +1,6 @@
+services:
+  webserver:
+    build: ./app
+    hostname: passkey.pirate-ship
+    ports:
+      - "17123:17123"

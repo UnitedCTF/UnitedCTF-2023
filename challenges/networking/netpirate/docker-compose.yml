@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  gateway:
+    build:
+      context: ./gateway
+    container_name: gateway
+    restart: unless-stopped
+    # give it time to stop the levels
+    stop_grace_period: 5m
+    volumes:
+      - netpirate_ssh_config:/etc/ssh
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./level1:/level_bases/level1:ro
+      - ./level2:/level_bases/level2:ro
+      - ./level3:/level_bases/level3:ro
+      - ./level4:/level_bases/level4:ro
+      - ./level5:/level_bases/level5:ro
+      - ./level6:/level_bases/level6:ro
+    ports:
+      - 2222:22
+    environment:
+      FLAG_FR: "envoie un message à @KptCheeseWhiz sur discord pour recevoir le flag"
+      FLAG_EN: "send a message to @KptCheeseWhiz on discord to receive the flag"
+
+      # in minutes
+      REAP_INTERVAL: 15
+      REAP_CUTOFF: 60
+
+      # in seconds
+      FLAG_INTERVAL: 60
+
+      # maximum amount of levels running at the same time
+      # NOTE: if you increase this number, do not forget to increase fs.inotify.max_user_instances to ~5x higher
+      LEVEL_LIMIT_COUNT: 20
+      # uncomment the next line and restart the docker compose to enforce CTFd validation (also change the URL ;))
+      # LEVEL_CTFD_INTEGRATION: https://ctfd.example.com/
+
+      ENTRYPOINT_LIMIT_CPU: 0.3
+      ENTRYPOINT_LIMIT_MEM: 200m
+
+      SERVER_LIMIT_CPU: 0.03
+      SERVER_LIMIT_MEM: 20m
+
+volumes:
+  netpirate_ssh_config:

@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %}Hold's portal - Cyber Corsairs{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if role == "Gunner" %}
+            <p>flag-TreasuresAreLikeBeersBetterShared</p>
+        {% else %}
+            <p>Ho.. Youre a Cook, you cannot access this place, its only for crewmate with the Gunner role, the real though ones</p>
+        {%endif%}
+    </div>
+{% endblock %}

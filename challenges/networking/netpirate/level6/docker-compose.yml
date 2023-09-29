@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  entrypoint:
+    build:
+      context: ./entrypoint
+
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    sysctls:
+      net.ipv4.ip_forward: 0
+    cpus: ${ENTRYPOINT_LIMIT_CPU:-0.3}
+    mem_limit: ${ENTRYPOINT_LIMIT_MEM:-128m}
+
+    networks:
+      network:
+
+  server1:
+    build:
+      context: ./server1
+
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    cpus: ${SERVER_LIMIT_CPU:-0.01}
+    mem_limit: ${SERVER_LIMIT_MEM:-8m}
+
+    environment:
+      FLAG: flag-0b3960ff20e75f9892bb9362cbe6ad18567d1099e5a7fa194b8a7d6f9d6fd15c
+
+    volumes:
+      - common:/common
+
+    networks:
+      network:
+
+  server2:
+    build:
+      context: ./server2
+
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    cpus: ${SERVER_LIMIT_CPU:-0.01}
+    mem_limit: ${SERVER_LIMIT_MEM:-8m}
+
+    environment:
+      FLAG_INTERVAL: ${FLAG_INTERVAL:-60}
+
+    volumes:
+      - common:/common
+
+    networks:
+      network:
+
+  server3:
+    build:
+      context: ./server3
+
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    cpus: ${SERVER_LIMIT_CPU:-0.01}
+    mem_limit: ${SERVER_LIMIT_MEM:-8m}
+
+    volumes:
+      - common:/common
+
+    networks:
+      network:
+
+volumes:
+  common:
+
+networks:
+  network:
+    driver_opts:
+      com.docker.network.bridge.name: ${BR_NAME:-np-level6}

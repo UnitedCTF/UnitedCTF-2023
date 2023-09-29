@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block title %}Cyber Corsairs{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <h2>Meet the Crew</h2>
+    <div class="crew-member">
+        <img src="/static/pirate1.jpg" alt="Pirate Captain">
+        <div>
+            <h3><a href="/crew/2">Cannonball Jack</a></h3>
+            <p>The master gunner of the crew, known for his accuracy in launching cannonballs at enemy ships.</p>
+        </div>
+    </div>
+    <div class="crew-member">
+        <img src="/static/pirate2.jpg" alt="Pirate First Mate">
+        <div>
+            <h3><a href="/crew/3">Scarlett the Swift</a></h3>
+            <p>Our agile and quick-witted first mate, expert in navigating treacherous waters.</p>
+        </div>
+    </div>
+    <div class="crew-member">
+        <img src="/static/zoro.jpg" alt="Pirate Gunner">
+        <div>
+            <h3><a href="/crew/4">Zoro Roronoa</a></h3>
+            <p>Lost his first's crew, so now is stuck with us. Good swordsman tho.</p>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

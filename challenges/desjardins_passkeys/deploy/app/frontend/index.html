@@ -1,0 +1,17 @@
+<html>
+	<head></head>
+	<body>
+		<script src="https://unpkg.com/petite-vue"></script>
+		<script src="https://psg.so/web.js"></script>
+		Hello Pirate, please register securely to our website :)
+		<div class="authContainer">
+			<passage-auth :app-id="appId"></passage-auth>
+		</div>
+
+		<script defer>
+			PetiteVue.createApp({
+				appId: "<%= process.env.PASSAGE_APP_ID %>"
+			}).mount()
+		</script>
+	</body>
+</html>

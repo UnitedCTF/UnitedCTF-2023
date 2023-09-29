@@ -1,0 +1,25 @@
+<html>
+	<head></head>
+	<body>
+		<script src="https://unpkg.com/petite-vue"></script>
+		<script src="https://psg.so/web.js"></script>
+
+		You are signed up! Now go back to the main page to login using a modern authentication standard.
+
+		<script type="module">
+			import {Passage} from "https://cdn.passage.id/passage-js.js"
+
+			const passage = new Passage('prqs4gT8b9HAINxXJjl7l99A');
+			const user = passage.getCurrentUser();
+			const userInfo = await user.userInfo();
+			console.log('user', userInfo)
+
+			export function signout() {
+				const session = passage.getCurrentSession(); 
+				session.signOut();
+				console.log('signed out')
+			}
+			signout()
+		</script>
+	</body>
+</html>
